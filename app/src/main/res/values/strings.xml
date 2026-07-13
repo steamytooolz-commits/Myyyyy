@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aeterna: Life Simulator</string>
+
+    <!-- General UI -->
+    <string name="loading">Loading...</string>
+    <string name="age_up">AGE UP</string>
+    <string name="start_new_life">Start New Life</string>
+    <string name="skip">Skip</string>
+    <string name="what_do_you_do">What do you do?</string>
+    <string name="unknown">Unknown</string>
+
+    <!-- Navigation -->
+    <string name="nav_life">Life</string>
+    <string name="nav_activities">Activities</string>
+    <string name="nav_career">Career</string>
+    <string name="nav_dynasty">Dynasty</string>
+    <string name="nav_relationships">Relationships</string>
+    <string name="nav_assets">Assets</string>
+
+    <!-- Dashboard -->
+    <string name="welcome_title">Welcome to Aeterna</string>
+    <string name="core_stats">Core Stats</string>
+    <string name="cash_display">$ %s</string>
+
+    <!-- Stats -->
+    <string name="stat_health">Health</string>
+    <string name="stat_happiness">Happiness</string>
+    <string name="stat_smarts">Smarts</string>
+    <string name="stat_looks">Looks</string>
+    <string name="stat_stress">Stress</string>
+    <string name="stat_energy">Energy</string>
+    <string name="stat_hunger">Hunger</string>
+    <string name="stat_hygiene">Hygiene</string>
+    <string name="stat_charisma">Charisma</string>
+    <string name="stat_reputation">Reputation</string>
+    <string name="stat_karma">Karma</string>
+    <string name="stat_notoriety">Notoriety</string>
+    <string name="stat_sanity">Sanity</string>
+    <string name="stat_creativity">Creativity</string>
+    <string name="stat_discipline">Discipline</string>
+    <string name="stat_empathy">Empathy</string>
+
+    <!-- Activities -->
+    <string name="activities_title">Activities</string>
+    <string name="activity_gym">Gym</string>
+    <string name="activity_study">Study</string>
+    <string name="activity_meditate">Meditate</string>
+    <string name="activity_socialize">Socialize</string>
+    <string name="activity_work">Work</string>
+    <string name="activity_party">Party</string>
+    <string name="activity_travel">Travel</string>
+    <string name="activity_sleep">Sleep</string>
+    <string name="activity_eat">Eat</string>
+    <string name="activity_therapy">Therapy</string>
+    <string name="activity_shower">Shower</string>
+    <string name="activity_crime">Crime</string>
+
+    <!-- Career -->
+    <string name="career_title">Career</string>
+    <string name="current_job">Current Job</string>
+    <string name="unemployed">Unemployed</string>
+    <string name="employed">Employed</string>
+    <string name="skills_attributes">Skills &amp; Attributes</string>
+    <string name="career_tips">Career Tips</string>
+    <string name="finances">Finances</string>
+    <string name="cash_label">Cash</string>
+    <string name="net_worth_label">Net Worth</string>
+
+    <!-- Relationships -->
+    <string name="relationships_title">Relationships</string>
+    <string name="family">Family</string>
+    <string name="social_stats">Social Stats</string>
+    <string name="social_actions">Social Actions</string>
+    <string name="no_known_parents">No known parents</string>
+    <string name="spouse_connected">Spouse: Connected</string>
+    <string name="no_children">No children</string>
+    <string name="children_count">Children: %d</string>
+    <string name="parents_count">Parents: %d</string>
+
+    <!-- Assets -->
+    <string name="assets_title">Assets</string>
+    <string name="net_worth_value">$ %s</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="wealth_tips">Wealth Tips</string>
+
+    <!-- Dynasty -->
+    <string name="dynasty_title">Dynasty &amp; Legacy</string>
+    <string name="family_header">Family</string>
+    <string name="legacy_header">Legacy</string>
+    <string name="head_label">Head</string>
+    <string name="generation_label">Generation</string>
+    <string name="children_label">Children</string>
+    <string name="spouse_label">Spouse</string>
+    <string name="draft_will">Draft Will &amp; Testament</string>
+    <string name="build_legacy_text">Build your legacy by starting a family!</string>
+    <string name="legacy_lives_on">Your legacy will live on through your children.</string>
+
+    <!-- Events -->
+    <string name="ai_generated">AI Generated</string>
+    <string name="event_category">%s</string>
+
+    <!-- Death -->
+    <string name="death_title">Death</string>
+    <string name="death_journey_ended">Your journey has ended.</string>
+
+    <!-- Crime -->
+    <string name="crime_success">Crime successful! You got away with it.</string>
+    <string name="crime_caught">You got caught! Bail: $%1$.0f, Sentence: %2$d years.</string>
+    <string name="crime_escaped">The crime failed but you escaped.</string>
+
+    <!-- Activity Feedback -->
+    <string name="activity_completed">Activity completed: %s</string>
+    <string name="activity_unknown">Unknown activity: %s</string>
+    <string name="character_not_found">Character not found</string>
+
+    <!-- Achievements -->
+    <string name="achivement_promotion">You got promoted!</string>
+    <string name="achivement_fired">You were fired from your job.</string>
+</resources>
