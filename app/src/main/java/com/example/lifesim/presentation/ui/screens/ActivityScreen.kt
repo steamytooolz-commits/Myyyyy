@@ -22,22 +22,22 @@ import com.example.lifesim.presentation.viewmodel.UiState
 data class ActivityItem(val id: String, val name: String, val icon: ImageVector, val color: Color, val statEffects: String)
 
 val defaultActivities = listOf(
-    ActivityItem("gym", "Gym", Icons.Rounded.FitnessCenter, HealthGreen, "athleticism+5 energy-4"),
-    ActivityItem("study", "Study", Icons.Rounded.MenuBook, SmartsBlue, "smarts+6 stress+3"),
+    ActivityItem("gym", "Gym", Icons.Rounded.FitnessCenter, HealthGreen, "athleticism+5 energy-8"),
+    ActivityItem("study", "Study", Icons.Rounded.MenuBook, SmartsBlue, "smarts+6 energy-5"),
     ActivityItem("meditate", "Meditate", Icons.Rounded.SelfImprovement, KarmaPurple, "stress-8 sanity+3"),
     ActivityItem("socialize", "Socialize", Icons.Rounded.Groups, HappinessYellow, "happiness+5 charisma+2"),
-    ActivityItem("work", "Work", Icons.Rounded.Work, ReputationTeal, "cash+5000 stress+4"),
-    ActivityItem("party", "Party", Icons.Rounded.Celebration, LooksPink, "happiness+8 energy-6"),
-    ActivityItem("travel", "Travel", Icons.Rounded.Flight, Gold, "happiness+10 cash-2000"),
-    ActivityItem("sleep", "Sleep", Icons.Rounded.Bedtime, Diamond, "energy+30 stress-5"),
+    ActivityItem("work", "Work", Icons.Rounded.Work, ReputationTeal, "cash+5000 energy-15"),
+    ActivityItem("party", "Party", Icons.Rounded.Celebration, LooksPink, "happiness+8 energy-12"),
+    ActivityItem("travel", "Travel", Icons.Rounded.Flight, Gold, "happiness+10 energy-15"),
+    ActivityItem("sleep", "Sleep", Icons.Rounded.Bedtime, Diamond, "stress-5 health+1"),
     ActivityItem("eat", "Eat", Icons.Rounded.Restaurant, StressOrange, "hunger+25 cash-30"),
-    ActivityItem("therapy", "Therapy", Icons.Rounded.Psychology, SmartsBlue, "sanity+10 stress-8 cash-150"),
+    ActivityItem("therapy", "Therapy", Icons.Rounded.Psychology, SmartsBlue, "sanity+10 stress-8"),
     ActivityItem("shower", "Shower", Icons.Rounded.WaterDrop, HealthGreen, "hygiene+40 happiness+2"),
-    ActivityItem("crime", "Crime", Icons.Rounded.Lock, Error, "cash+? karma-5 notoriety+5"),
-    ActivityItem("drink", "Drink", Icons.Rounded.Liquor, StressOrange, "stress-5 health-2 cash-40"),
-    ActivityItem("gamble", "Gamble", Icons.Rounded.Casino, Gold, "stress-3 cash-200"),
+    ActivityItem("crime", "Crime", Icons.Rounded.Lock, Error, "karma-5 energy-10"),
+    ActivityItem("drink", "Drink", Icons.Rounded.Liquor, StressOrange, "stress-5 cash-40"),
+    ActivityItem("gamble", "Gamble", Icons.Rounded.Casino, Gold, "stress-3 energy-5"),
     ActivityItem("smoke", "Smoke", Icons.Rounded.SmokingRooms, Error, "stress-3 health-3"),
-    ActivityItem("rehab", "Rehab", Icons.Rounded.Healing, HealthGreen, "severity-3 health+5 cash-5000"),
+    ActivityItem("rehab", "Rehab", Icons.Rounded.Healing, HealthGreen, "health+5 energy-10"),
 )
 
 val militaryActivities = listOf(

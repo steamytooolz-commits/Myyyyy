@@ -25,7 +25,7 @@ class TimeAndAgingEngine @Inject constructor() {
         var c = character
         val age = currentYear - birthYear
         if (age < 0) return c
-        c = c.copy()
+        c = c.copy(energy = 100.0)
         c = applyAgeModifiers(c, age)
         c = applyStressDecay(c)
         c = applyRelationshipDecay(c)
@@ -69,10 +69,15 @@ class TimeAndAgingEngine @Inject constructor() {
 
     fun calculateDeathProbability(character: CharacterEntity, birthYear: Int, currentYear: Int): Double {
         val age = currentYear - birthYear
+        if (character.health <= 0.0) return 1.0
+        if (age >= 120) return 1.0
         var prob = when { age < 5 -> 0.02; age < 20 -> 0.001; age < 40 -> 0.002; age < 60 -> 0.01
-            age < 70 -> 0.03; age < 80 -> 0.08; age < 90 -> 0.15; else -> 0.3 }
-        if (character.health < 20) prob += 0.1; if (character.stress > 80) prob += 0.05
-        if (character.isAddicted) prob += 0.03; if (character.sanity < 30) prob += 0.05
-        return prob.coerceIn(0.0, 0.95)
+            age < 70 -> 0.03; age < 80 -> 0.08; age < 90 -> 0.15; age < 100 -> 0.3; age < 110 -> 0.6; else -> 0.8 }
+        if (character.health < 20) prob += 0.15
+        if (character.health < 10) prob += 0.3
+        if (character.stress > 80) prob += 0.05
+        if (character.isAddicted) prob += 0.03
+        if (character.sanity < 30) prob += 0.05
+        return prob.coerceIn(0.0, 0.99)
     }
 }

@@ -254,7 +254,7 @@ class AgeUpUseCase @Inject constructor(
         }
 
         // Death check
-        if (Random.nextDouble() < timeEngine.calculateDeathProbability(c, birthYear, currentYear)) {
+        if (c.health <= 0.0 || Random.nextDouble() < timeEngine.calculateDeathProbability(c, birthYear, currentYear)) {
             characterDao.markAsDeceased(characterId); return AgeUpResult(c.copy(isAlive = false), isDead = true, deathCause = "natural causes", consequences = consequences)
         }
 

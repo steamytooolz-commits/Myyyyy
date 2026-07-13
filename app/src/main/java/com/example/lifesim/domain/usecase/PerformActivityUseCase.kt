@@ -188,6 +188,15 @@ class PerformActivityUseCase @Inject constructor(
         val statChanges = statEngine.calculateStatChange(character, activityType)
         if (statChanges.isEmpty()) return ActivityResult(false, "Unknown activity: $activityType")
 
+        val energyCost = -(statChanges["energy"] ?: 0.0)
+        if (energyCost > 0 && character.energy < energyCost) {
+            return ActivityResult(false, "You are too tired! Get some rest or Age Up.")
+        }
+        val cashCost = -(statChanges["cash"] ?: 0.0)
+        if (cashCost > 0 && character.cash < cashCost) {
+            return ActivityResult(false, "You can't afford this activity.")
+        }
+
         var updatedChar = character
         statChanges.forEach { (stat, change) ->
             updatedChar = when { stat.startsWith("addiction_") && change > 0 -> addictionEngine.applySubstance(updatedChar, stat.removePrefix("addiction_"))
