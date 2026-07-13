@@ -61,11 +61,12 @@ object AppModule {
     fun providePerformActivityUseCase(
         characterDao: com.example.lifesim.data.local.dao.CharacterDao, memoryDao: com.example.lifesim.data.local.dao.MemoryDao,
         crimeRecordDao: com.example.lifesim.data.local.dao.CrimeRecordDao,
+        relationshipDao: com.example.lifesim.data.local.dao.RelationshipDao,
         statEngine: StatAndAttributeEngine, crimeEngine: CrimeAndLegalEngine, addictionEngine: AddictionEngine,
         prisonEngine: PrisonEngine, militaryEngine: MilitaryEngine, politicalEngine: PoliticalEngine,
         educationEngine: EducationEngine, investmentEngine: InvestmentEngine,
         hobbyEngine: HobbyEngine, petEngine: PetEngine, medicalEngine: MedicalEngine
-    ): PerformActivityUseCase = PerformActivityUseCase(characterDao, memoryDao, crimeRecordDao, statEngine, crimeEngine, addictionEngine,
+    ): PerformActivityUseCase = PerformActivityUseCase(characterDao, memoryDao, crimeRecordDao, relationshipDao, statEngine, crimeEngine, addictionEngine,
         prisonEngine, militaryEngine, politicalEngine, educationEngine, investmentEngine, hobbyEngine, petEngine, medicalEngine)
 
     @Provides @Singleton

@@ -36,7 +36,7 @@ sealed class Intent {
 
 enum class Screen {
     DASHBOARD, ACTIVITIES, RELATIONSHIPS, CAREER, DYNASTY, ASSETS,
-    PRISON, MILITARY, POLITICAL, EDUCATION, REAL_ESTATE, INVESTMENT, HOBBIES, PETS, MEDICAL, SETTINGS
+    PRISON, MILITARY, POLITICAL, EDUCATION, REAL_ESTATE, INVESTMENT, HOBBIES, PETS, MEDICAL, HISTORY, SETTINGS
 }
 
 data class UiState(
@@ -53,7 +53,8 @@ data class UiState(
     val currentYear: Int = 2024,
     val netWorth: NetWorthResult? = null,
     val relationships: List<com.example.lifesim.data.local.entity.RelationshipEntity> = emptyList(),
-    val socialCharacters: Map<String, CharacterEntity> = emptyMap()
+    val socialCharacters: Map<String, CharacterEntity> = emptyMap(),
+    val memories: List<MemoryEntity> = emptyList()
 )
 
 @HiltViewModel
@@ -92,14 +93,21 @@ class GameViewModel @Inject constructor(
     private fun observeRelationships(charId: String) {
         relationshipsJob?.cancel()
         relationshipsJob = viewModelScope.launch {
-            relationshipDao.observeActiveRelationships(charId).collect { rels ->
-                val charactersMap = mutableMapOf<String, CharacterEntity>()
-                rels.forEach { rel ->
-                    characterDao.getCharacterById(rel.targetCharacterId)?.let { target ->
-                        charactersMap[rel.targetCharacterId] = target
+            launch {
+                relationshipDao.observeActiveRelationships(charId).collect { rels ->
+                    val charactersMap = mutableMapOf<String, CharacterEntity>()
+                    rels.forEach { rel ->
+                        characterDao.getCharacterById(rel.targetCharacterId)?.let { target ->
+                            charactersMap[rel.targetCharacterId] = target
+                        }
                     }
+                    _state.update { it.copy(relationships = rels, socialCharacters = charactersMap) }
                 }
-                _state.update { it.copy(relationships = rels, socialCharacters = charactersMap) }
+            }
+            launch {
+                memoryDao.observeActiveMemories(charId).collect { memories ->
+                    _state.update { it.copy(memories = memories) }
+                }
             }
         }
     }

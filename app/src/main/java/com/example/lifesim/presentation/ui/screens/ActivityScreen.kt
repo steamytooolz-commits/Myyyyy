@@ -36,8 +36,10 @@ val defaultActivities = listOf(
     ActivityItem("crime", "Crime", Icons.Rounded.Lock, Error, "karma-5 energy-10"),
     ActivityItem("drink", "Drink", Icons.Rounded.Liquor, StressOrange, "stress-5 cash-40"),
     ActivityItem("gamble", "Gamble", Icons.Rounded.Casino, Gold, "stress-3 energy-5"),
+    ActivityItem("lottery", "Lottery", Icons.Rounded.ConfirmationNumber, Gold, "cash-50"),
     ActivityItem("smoke", "Smoke", Icons.Rounded.SmokingRooms, Error, "stress-3 health-3"),
     ActivityItem("rehab", "Rehab", Icons.Rounded.Healing, HealthGreen, "health+5 energy-10"),
+    ActivityItem("plastic_surgery", "Plastic Surgery", Icons.Rounded.Face, LooksPink, "looks+20 cash-5000"),
 )
 
 val militaryActivities = listOf(
@@ -79,6 +81,23 @@ val investmentActivities = listOf(
     ActivityItem("diversify_investments", "Diversify", Icons.Rounded.AccountBalance, KarmaPurple, "smarts+5 discipline+3"),
 )
 
+val romanceActivities = listOf(
+    ActivityItem("find_date", "Find Date", Icons.Rounded.Favorite, LooksPink, "happiness+5 energy-10"),
+    ActivityItem("dating_app", "Dating App", Icons.Rounded.PhoneIphone, KarmaPurple, "happiness+3 energy-5 cash-10")
+)
+
+val familyActivities = listOf(
+    ActivityItem("adopt_child", "Adopt Child", Icons.Rounded.ChildCare, HappinessYellow, "happiness+10 cash-25000"),
+    ActivityItem("spend_time_family", "Spend Time All", Icons.Rounded.FamilyRestroom, HealthGreen, "happiness+5 energy-5")
+)
+
+val medicalActivities = listOf(
+    ActivityItem("medical_checkup", "Checkup", Icons.Rounded.LocalHospital, HealthGreen, "health+10 smarts+2 cash-500"),
+    ActivityItem("surgery", "Surgery", Icons.Rounded.Medication, Error, "health+50 energy-80 cash-20000"),
+    ActivityItem("vaccination", "Vaccination", Icons.Rounded.Vaccines, SmartsBlue, "health+20 energy-5 cash-200"),
+    ActivityItem("physical_therapy", "Physical Therapy", Icons.Rounded.Healing, HealthGreen, "health+25 athleticism+5 cash-1000")
+)
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ActivityScreen(uiState: UiState, onActivity: (String) -> Unit) {
@@ -94,6 +113,47 @@ fun ActivityScreen(uiState: UiState, onActivity: (String) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             defaultActivities.forEach { activity ->
+                ActivityCard(activity, onActivity)
+            }
+        }
+
+        // --- Romance ---
+        val age = uiState.character?.dateOfBirth?.let { uiState.currentYear - (it / 31557600000L).toInt() } ?: 0
+        if (age >= 16) {
+            SectionHeader("Romance & Dating", Icons.Rounded.FavoriteBorder)
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                romanceActivities.forEach { activity ->
+                    ActivityCard(activity, onActivity)
+                }
+            }
+        }
+
+        // --- Family ---
+        if (age >= 21) {
+            SectionHeader("Family", Icons.Rounded.FamilyRestroom)
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                familyActivities.forEach { activity ->
+                    ActivityCard(activity, onActivity)
+                }
+            }
+        }
+
+        // --- Medical ---
+        SectionHeader("Medical", Icons.Rounded.LocalHospital)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            medicalActivities.forEach { activity ->
                 ActivityCard(activity, onActivity)
             }
         }

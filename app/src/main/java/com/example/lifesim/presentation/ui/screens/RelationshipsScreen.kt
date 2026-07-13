@@ -361,6 +361,22 @@ private fun RelationshipCard(
                 }
             }
 
+            val isFamily = relationship.relationType == RelationType.CHILD || relationship.relationType == RelationType.PARENT || relationship.relationType == RelationType.SIBLING
+            if (isFamily) {
+                actions.add { InteractionChip(label = "Play", icon = Icons.Rounded.Toys, color = HappinessYellow) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_PLAY) } }
+                actions.add { InteractionChip(label = "Dinner ($50)", icon = Icons.Rounded.Restaurant, color = Warning) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_DINNER) } }
+                actions.add { InteractionChip(label = "Read", icon = Icons.Rounded.Book, color = SmartsBlue) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_READ) } }
+                actions.add { InteractionChip(label = "Movie ($20)", icon = Icons.Rounded.Movie, color = Info) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_MOVIE) } }
+                actions.add { InteractionChip(label = "Vacation ($2k)", icon = Icons.Rounded.FlightTakeoff, color = Success) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_VACATION) } }
+                actions.add { InteractionChip(label = "Sports", icon = Icons.Rounded.SportsSoccer, color = ReputationTeal) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_SPORTS) } }
+                actions.add { InteractionChip(label = "Chores", icon = Icons.Rounded.CleaningServices, color = Warning) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_CHORES) } }
+                actions.add { InteractionChip(label = "Homework", icon = Icons.Rounded.School, color = SmartsBlue) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_HOMEWORK) } }
+                actions.add { InteractionChip(label = "Teach", icon = Icons.Rounded.EmojiObjects, color = KarmaPurple) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_TEACH) } }
+                actions.add { InteractionChip(label = "Advice", icon = Icons.Rounded.Psychology, color = Accent) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_ADVICE) } }
+                actions.add { InteractionChip(label = "Converse", icon = Icons.Rounded.Chat, color = Info) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_CONVERSATION) } }
+                actions.add { InteractionChip(label = "Surprise ($150)", icon = Icons.Rounded.CardGiftcard, color = Gold) { onInteraction(relationship.relationshipId, InteractionType.FAMILY_SURPRISE_GIFT) } }
+            }
+
             // Render chunked grid of actions (2 per row for high density and great fit on all screen sizes)
             val chunks = actions.chunked(2)
             chunks.forEach { rowActions ->

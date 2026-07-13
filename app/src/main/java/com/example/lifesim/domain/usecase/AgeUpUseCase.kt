@@ -44,9 +44,31 @@ class AgeUpUseCase @Inject constructor(
         val (charAfterConsequences, initialConsequences) = consequenceEngine.evaluateConsequences(c, memories, currentYear)
         val consequences = initialConsequences.toMutableList()
         c = charAfterConsequences
-        repeat(12) { c = timeEngine.advanceMonth(c) }
 
         val age = currentYear - birthYear
+
+        var isOrphan = false
+        if (age < 18) {
+            var hasLivingParent = false
+            for (pid in c.parentsIds) {
+                val p = characterDao.getCharacterById(pid)
+                if (p != null && p.isAlive) {
+                    hasLivingParent = true
+                    break
+                }
+            }
+            if (!hasLivingParent) {
+                isOrphan = true
+            }
+        }
+        
+        if (isOrphan && age < 18 && c.currentLocationId != "foster_care") {
+            c = c.copy(currentLocationId = "foster_care", happiness = (c.happiness - 20.0).coerceAtLeast(0.0), stress = (c.stress + 30.0).coerceAtMost(100.0))
+            consequences.add(Consequence("Tragedy! With no living parents, you have been placed in foster care.", mapOf("happiness" to -20.0, "stress" to 30.0), 5))
+        }
+
+        repeat(12) { c = timeEngine.advanceMonth(c, age, isOrphan) }
+
         if (age == 5) {
             c = c.copy(currentEducationId = "Elementary School", educationYearsCompleted = 0)
             consequences.add(Consequence("Started Elementary School! Time to learn and make friends.", mapOf("smarts" to 2.0), 1))
@@ -62,6 +84,10 @@ class AgeUpUseCase @Inject constructor(
                 updatedDegrees.add("High School Diploma")
             }
             c = c.copy(currentEducationId = null, educationYearsCompleted = 0, degrees = updatedDegrees)
+            if (c.currentLocationId == "foster_care") {
+                 c = c.copy(currentLocationId = null)
+                 consequences.add(Consequence("You aged out of foster care and are now on your own.", mapOf("happiness" to 5.0, "stress" to 10.0), 3))
+            }
             consequences.add(Consequence("Graduated High School! Received your High School Diploma. You can now apply to University or get a Job!", mapOf("smarts" to 5.0, "reputation" to 5.0, "happiness" to 8.0), 3))
         }
 

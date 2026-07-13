@@ -10,11 +10,22 @@ import kotlin.math.min
 @Singleton
 class TimeAndAgingEngine @Inject constructor() {
 
-    fun advanceMonth(character: CharacterEntity): CharacterEntity {
+    fun advanceMonth(character: CharacterEntity, age: Int, inFosterCare: Boolean = false): CharacterEntity {
         var c = character
         c = c.copy(energy = (c.energy - 2.0).coerceIn(0.0, 100.0))
         c = c.copy(hunger = (c.hunger - 1.5).coerceIn(0.0, 100.0))
         c = c.copy(hygiene = (c.hygiene - 1.0).coerceIn(0.0, 100.0))
+
+        if (age < 18) {
+            // Parents or foster care provide basic needs
+            c = c.copy(hunger = (c.hunger + 1.5).coerceIn(0.0, 100.0))
+            c = c.copy(hygiene = (c.hygiene + 1.0).coerceIn(0.0, 100.0))
+            
+            if (inFosterCare) {
+                c = c.copy(happiness = (c.happiness - 0.5).coerceIn(0.0, 100.0))
+            }
+        }
+
         if (c.hunger < 20.0) c = c.copy(health = (c.health - 3.0).coerceIn(0.0, 100.0))
         if (c.energy < 20.0) c = c.copy(happiness = (c.happiness - 2.0).coerceIn(0.0, 100.0))
         if (c.hygiene < 20.0) c = c.copy(happiness = (c.happiness - 1.5).coerceIn(0.0, 100.0))

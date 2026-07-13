@@ -44,6 +44,7 @@ object NavRoutes {
     const val HOBBIES = "hobbies"
     const val PETS = "pets"
     const val MEDICAL = "medical"
+    const val HISTORY = "history"
     const val SETTINGS = "settings"
 }
 
@@ -64,7 +65,8 @@ private fun getNavigationItems(): List<NavigationItem> = listOf(
     NavigationItem(Icons.Rounded.TrendingUp, "Invest", Screen.INVESTMENT, NavRoutes.INVESTMENT),
     NavigationItem(Icons.Rounded.Palette, "Hobbies", Screen.HOBBIES, NavRoutes.HOBBIES),
     NavigationItem(Icons.Rounded.Pets, "Pets", Screen.PETS, NavRoutes.PETS),
-    NavigationItem(Icons.Rounded.LocalHospital, "Health", Screen.MEDICAL, NavRoutes.MEDICAL)
+    NavigationItem(Icons.Rounded.LocalHospital, "Health", Screen.MEDICAL, NavRoutes.MEDICAL),
+    NavigationItem(Icons.Rounded.History, "History", Screen.HISTORY, NavRoutes.HISTORY)
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -495,6 +497,7 @@ fun NavGraph(
                 Screen.HOBBIES -> NavRoutes.HOBBIES
                 Screen.PETS -> NavRoutes.PETS
                 Screen.MEDICAL -> NavRoutes.MEDICAL
+                Screen.HISTORY -> NavRoutes.HISTORY
                 Screen.SETTINGS -> NavRoutes.SETTINGS
             }
             navController.navigate(route) {
@@ -635,6 +638,10 @@ fun NavGraph(
                         viewModel.processIntent(Intent.PerformActivity(action))
                     }
                 )
+            }
+
+            composable(NavRoutes.HISTORY) {
+                HistoryScreen(uiState = uiState)
             }
 
             composable(NavRoutes.SETTINGS) {

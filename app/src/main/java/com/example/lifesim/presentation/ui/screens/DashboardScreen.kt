@@ -82,6 +82,9 @@ fun DashboardScreen(
                         Text("Year ${uiState.currentYear} · Age ${(uiState.currentYear - (character.dateOfBirth / 31557600000L).toInt()).coerceAtLeast(0)}",
                             style = MaterialTheme.typography.bodySmall, color = TextSecondary)
                         Text("Cash: $${String.format("%,.0f", character.cash)}", style = MaterialTheme.typography.bodySmall, color = Gold)
+                        if (character.currentLocationId == "foster_care") {
+                            Text("Status: Foster Care", style = MaterialTheme.typography.labelSmall, color = StressOrange)
+                        }
                     }
                 }
             }

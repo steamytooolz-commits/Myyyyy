@@ -86,13 +86,61 @@ class RelationshipAndSocialEngine @Inject constructor() {
                 rel = rel.copy(trust = (rel.trust + 15).coerceIn(0, 100), forgiveness = (rel.forgiveness + 20).coerceIn(0, 100), affection = (rel.affection + 10).coerceIn(0, 100))
                 c = c.copy(karma = (c.karma + 10).coerceIn(0, 100))
             }
-            else -> {}
+            InteractionType.SPEND_TIME, InteractionType.DATE, InteractionType.PROPOSE, InteractionType.BREAK_UP, InteractionType.DIVORCE, InteractionType.HAVE_KID -> {}
+            InteractionType.FAMILY_PLAY -> {
+                rel = rel.copy(affection = (rel.affection + 6).coerceIn(0, 100), trust = (rel.trust + 3).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(happiness = (c.happiness + 4.0).coerceIn(0.0, 100.0), energy = (c.energy - 5.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_DINNER -> {
+                rel = rel.copy(affection = (rel.affection + 9).coerceIn(0, 100), trust = (rel.trust + 4).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(happiness = (c.happiness + 6.0).coerceIn(0.0, 100.0), cash = (c.cash - 50.0).coerceAtLeast(0.0))
+            }
+            InteractionType.FAMILY_READ -> {
+                rel = rel.copy(affection = (rel.affection + 5).coerceIn(0, 100), trust = (rel.trust + 5).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(smarts = (c.smarts + 1.0).coerceIn(0.0, 100.0), energy = (c.energy - 2.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_MOVIE -> {
+                rel = rel.copy(affection = (rel.affection + 7).coerceIn(0, 100), trust = (rel.trust + 3).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(happiness = (c.happiness + 5.0).coerceIn(0.0, 100.0), cash = (c.cash - 20.0).coerceAtLeast(0.0))
+            }
+            InteractionType.FAMILY_VACATION -> {
+                rel = rel.copy(affection = (rel.affection + 20).coerceIn(0, 100), trust = (rel.trust + 10).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(happiness = (c.happiness + 20.0).coerceIn(0.0, 100.0), cash = (c.cash - 2000.0).coerceAtLeast(0.0), stress = (c.stress - 15.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_SPORTS -> {
+                rel = rel.copy(affection = (rel.affection + 8).coerceIn(0, 100), trust = (rel.trust + 5).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(athleticism = (c.athleticism + 3.0).coerceIn(0.0, 100.0), energy = (c.energy - 10.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_CHORES -> {
+                rel = rel.copy(affection = (rel.affection + 2).coerceIn(0, 100), trust = (rel.trust + 6).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(discipline = (c.discipline + 2.0).coerceIn(0.0, 100.0), energy = (c.energy - 8.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_HOMEWORK -> {
+                rel = rel.copy(affection = (rel.affection + 4).coerceIn(0, 100), trust = (rel.trust + 7).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(smarts = (c.smarts + 2.0).coerceIn(0.0, 100.0), energy = (c.energy - 5.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_TEACH -> {
+                rel = rel.copy(affection = (rel.affection + 5).coerceIn(0, 100), trust = (rel.trust + 8).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(smarts = (c.smarts + 3.0).coerceIn(0.0, 100.0), energy = (c.energy - 4.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_ADVICE -> {
+                rel = rel.copy(affection = (rel.affection + 3).coerceIn(0, 100), trust = (rel.trust + 10).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(happiness = (c.happiness + 2.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_CONVERSATION -> {
+                rel = rel.copy(affection = (rel.affection + 5).coerceIn(0, 100), trust = (rel.trust + 5).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(happiness = (c.happiness + 3.0).coerceIn(0.0, 100.0))
+            }
+            InteractionType.FAMILY_SURPRISE_GIFT -> {
+                rel = rel.copy(affection = (rel.affection + 15).coerceIn(0, 100), trust = (rel.trust + 8).coerceIn(0, 100), interactionCount = rel.interactionCount + 1)
+                c = c.copy(cash = (c.cash - 150.0).coerceAtLeast(0.0), happiness = (c.happiness + 10.0).coerceIn(0.0, 100.0))
+            }
         }
         return c to rel
     }
 }
 
-enum class InteractionType { CHAT, GIFT, HELP, ARGUE, FLIRT, APOLOGIZE, BETRAY, MAKE_AMENDS, SPEND_TIME, DATE, PROPOSE, BREAK_UP, DIVORCE, HAVE_KID }
+enum class InteractionType { CHAT, GIFT, HELP, ARGUE, FLIRT, APOLOGIZE, BETRAY, MAKE_AMENDS, SPEND_TIME, DATE, PROPOSE, BREAK_UP, DIVORCE, HAVE_KID, FAMILY_PLAY, FAMILY_DINNER, FAMILY_READ, FAMILY_MOVIE, FAMILY_VACATION, FAMILY_SPORTS, FAMILY_CHORES, FAMILY_HOMEWORK, FAMILY_TEACH, FAMILY_ADVICE, FAMILY_CONVERSATION, FAMILY_SURPRISE_GIFT }
 
 data class TriggerEvent(val title: String, val description: String, val statChanges: Map<String, Double>, val category: String)
 data class NetworkEffect(val socialScore: Int, val highStatusConnections: Int, val enemyCount: Int)

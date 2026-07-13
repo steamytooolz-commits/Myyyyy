@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 class PerformActivityUseCase @Inject constructor(
     private val characterDao: CharacterDao, private val memoryDao: MemoryDao, private val crimeRecordDao: CrimeRecordDao,
+    private val relationshipDao: com.example.lifesim.data.local.dao.RelationshipDao,
     private val statEngine: StatAndAttributeEngine, private val crimeEngine: CrimeAndLegalEngine,
     private val addictionEngine: AddictionEngine, private val prisonEngine: PrisonEngine,
     private val militaryEngine: MilitaryEngine, private val politicalEngine: PoliticalEngine,
@@ -185,8 +186,15 @@ class PerformActivityUseCase @Inject constructor(
             }
         }
 
-        val statChanges = statEngine.calculateStatChange(character, activityType)
+        var statChanges = statEngine.calculateStatChange(character, activityType).toMutableMap()
         if (statChanges.isEmpty()) return ActivityResult(false, "Unknown activity: $activityType")
+
+        if (age < 18) {
+            val cashCost = -(statChanges["cash"] ?: 0.0)
+            if (cashCost > 0) {
+                 statChanges["cash"] = 0.0 // Free for kids (parents/state pay)
+            }
+        }
 
         val energyCost = -(statChanges["energy"] ?: 0.0)
         if (energyCost > 0 && character.energy < energyCost) {
@@ -212,6 +220,90 @@ class PerformActivityUseCase @Inject constructor(
             val message = if (crimeResult.success && !crimeResult.caught) "Crime successful!" else if (crimeResult.caught) "Caught! Bail: $${crimeResult.bailAmount}" else "Failed but escaped."
             return ActivityResult(success = true, message = message, character = updatedChar,
                 memory = MemoryEntity(characterId = characterId, yearOccurred = currentYear, ageOccurred = currentYear - (character.dateOfBirth / 31557600000L).toInt(), tickOccurred = currentYear.toLong(), eventType = MemoryEventType.CRIME, description = message, emotionalValence = if (crimeResult.success) 0.5 else -0.5, emotionalIntensity = 0.7, tags = listOf("crime")))
+        }
+
+        // Romance special handling
+        if (activityType == "find_date" || activityType == "dating_app") {
+            if (kotlin.random.Random.nextDouble() < 0.6) {
+                val npcGender = if (character.sexualOrientation == com.example.lifesim.data.local.entity.SexualOrientation.GAY) character.gender else if (character.sexualOrientation == com.example.lifesim.data.local.entity.SexualOrientation.STRAIGHT) (if (character.gender == com.example.lifesim.data.local.entity.Gender.MALE) com.example.lifesim.data.local.entity.Gender.FEMALE else com.example.lifesim.data.local.entity.Gender.MALE) else com.example.lifesim.data.local.entity.Gender.values().random()
+                val npc = CharacterEntity(
+                    firstName = listOf("Taylor", "Jordan", "Alex", "Sam", "Casey", "Riley", "Jamie", "Morgan", "Avery", "Harper").random(),
+                    lastName = listOf("Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez").random(),
+                    dateOfBirth = character.dateOfBirth + ((kotlin.random.Random.nextInt(-5, 6)) * 31557600000L),
+                    gender = npcGender,
+                    health = 60.0 + kotlin.random.Random.nextDouble() * 40.0,
+                    looks = 40.0 + kotlin.random.Random.nextDouble() * 60.0,
+                    smarts = 40.0 + kotlin.random.Random.nextDouble() * 60.0,
+                    cash = 1000.0 + kotlin.random.Random.nextDouble() * 50000.0
+                )
+                characterDao.insertCharacter(npc)
+                val relation = com.example.lifesim.data.local.entity.RelationshipEntity(
+                    ownerCharacterId = characterId, targetCharacterId = npc.characterId,
+                    relationType = com.example.lifesim.data.local.entity.RelationType.PARTNER,
+                    affection = 60, trust = 50, respect = 50, lust = 70
+                )
+                relationshipDao.insertRelationship(relation)
+                characterDao.updateCharacter(updatedChar)
+                return ActivityResult(success = true, message = "You went on a date and hit it off with ${npc.firstName} ${npc.lastName}!", character = updatedChar,
+                    memory = MemoryEntity(characterId = characterId, yearOccurred = currentYear, ageOccurred = currentYear - (character.dateOfBirth / 31557600000L).toInt(), tickOccurred = currentYear.toLong(), eventType = MemoryEventType.MUNDANE, description = "Started dating ${npc.firstName}", emotionalValence = 0.8, emotionalIntensity = 0.6, tags = listOf("romance")))
+            } else {
+                characterDao.updateCharacter(updatedChar)
+                return ActivityResult(success = true, message = "You didn't find anyone you clicked with this time.", character = updatedChar)
+            }
+        }
+
+        // Lottery special handling
+        if (activityType == "lottery") {
+            if (kotlin.random.Random.nextDouble() < 0.005) { // 0.5% chance
+                val winnings = 10000.0 + kotlin.random.Random.nextDouble() * 990000.0
+                updatedChar = updatedChar.copy(cash = updatedChar.cash + winnings, happiness = (updatedChar.happiness + 50.0).coerceIn(0.0, 100.0))
+                characterDao.updateCharacter(updatedChar)
+                return ActivityResult(success = true, message = "JACKPOT! You won $${"%,.0f".format(winnings)} in the lottery!", character = updatedChar,
+                    memory = MemoryEntity(characterId = characterId, yearOccurred = currentYear, ageOccurred = currentYear - (character.dateOfBirth / 31557600000L).toInt(), tickOccurred = currentYear.toLong(), eventType = MemoryEventType.MUNDANE, description = "Won the lottery", emotionalValence = 1.0, emotionalIntensity = 1.0, tags = listOf("lottery", "wealth")))
+            } else {
+                characterDao.updateCharacter(updatedChar)
+                return ActivityResult(success = true, message = "You bought a lottery ticket, but didn't win anything.", character = updatedChar)
+            }
+        }
+
+        // Family special handling
+        if (activityType == "adopt_child") {
+            if (updatedChar.cash < 25000) {
+                return ActivityResult(false, "You don't have enough money to adopt a child.", character = updatedChar)
+            }
+            val npcGender = com.example.lifesim.data.local.entity.Gender.values().random()
+            val childAge = kotlin.random.Random.nextInt(0, 10)
+            val npc = CharacterEntity(
+                firstName = listOf("Taylor", "Jordan", "Alex", "Sam", "Casey", "Riley", "Jamie", "Morgan", "Avery", "Harper", "Leo", "Mia").random(),
+                lastName = character.lastName,
+                dateOfBirth = character.dateOfBirth + ((age - childAge) * 31557600000L),
+                gender = npcGender,
+                health = 70.0 + kotlin.random.Random.nextDouble() * 30.0,
+                parentsIds = listOf(characterId)
+            )
+            characterDao.insertCharacter(npc)
+            val relation = com.example.lifesim.data.local.entity.RelationshipEntity(
+                ownerCharacterId = characterId, targetCharacterId = npc.characterId,
+                relationType = com.example.lifesim.data.local.entity.RelationType.CHILD,
+                affection = 80, trust = 60, respect = 50
+            )
+            relationshipDao.insertRelationship(relation)
+            characterDao.updateCharacter(updatedChar)
+            return ActivityResult(success = true, message = "You successfully adopted a child named ${npc.firstName}!", character = updatedChar,
+                memory = MemoryEntity(characterId = characterId, yearOccurred = currentYear, ageOccurred = currentYear - (character.dateOfBirth / 31557600000L).toInt(), tickOccurred = currentYear.toLong(), eventType = MemoryEventType.MILESTONE, description = "Adopted a child named ${npc.firstName}", emotionalValence = 0.9, emotionalIntensity = 0.8, tags = listOf("family", "adoption")))
+        }
+
+        if (activityType == "spend_time_family") {
+            val rels = relationshipDao.getActiveRelationships(characterId)
+            val familyRels = rels.filter { it.relationType == com.example.lifesim.data.local.entity.RelationType.CHILD || it.relationType == com.example.lifesim.data.local.entity.RelationType.PARENT || it.relationType == com.example.lifesim.data.local.entity.RelationType.SIBLING || it.relationType == com.example.lifesim.data.local.entity.RelationType.SPOUSE || it.relationType == com.example.lifesim.data.local.entity.RelationType.PARTNER }
+            if (familyRels.isEmpty()) {
+                return ActivityResult(false, "You don't have any family to spend time with.", character = updatedChar)
+            }
+            familyRels.forEach { rel ->
+                relationshipDao.updateRelationship(rel.copy(affection = (rel.affection + 5).coerceIn(0, 100), trust = (rel.trust + 2).coerceIn(0, 100)))
+            }
+            characterDao.updateCharacter(updatedChar)
+            return ActivityResult(success = true, message = "You spent quality time with your family.", character = updatedChar)
         }
 
         val moodlet = statEngine.createMoodletForEvent(activityType)
